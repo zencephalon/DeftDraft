@@ -17,9 +17,60 @@
 </style>
 
 <script type="text/javascript">
+
+   function Tree() {};
+Tree.prototype = {
+children: [],
+          parent: null,
+          text: "",
+          current: null
+};
+
+Tree.prototype.add_child = function(child) {
+   child.parent = this;
+   this.children.push(child);
+   this.current = this.children.length - 1;
+}
+
+Tree.prototype.next_child = function() {
+   if (this.current === undefined) {
+      this.current = 0;
+   } else {
+      this.current += 1;
+   }
+   if (this.current > (this.children.length - 1)) {
+      this.current = 0;
+   }
+   return this.children[this.current];
+}
+
+Tree.prototype.current_child = function() {
+   return this.children[this.current];
+}
+
+Tree.prototype.prev_child = function() {
+   if (this.current === undefined) {
+      this.current = this.children.length - 1;
+   } else {
+      this.current -= 1;
+   }
+   if (this.current < 0) {
+      this.current = this.children.length - 1;
+   }
+   return this.children[this.current];
+}
+
+Tree.Node = function(text) {
+   var tree = new Tree();
+   tree.text = text;
+   tree.children = [];
+   return tree;
+}
+
    var saved = "";
    var options = [];
    var current_option = 0;
+   var current_node = new Tree;
 
    function existing_option(snippet) {
       for (var i = 0; i < options.length; i++) {
@@ -30,30 +81,53 @@
       return -1;
    }
 
+function display_children(children) {
+   var res = "";
+   for (var i = 0; i < children.length; i++) {
+      res += children[i].text.replace(current_node.text, "");
+      res += "<br/>";
+   }
+   return res;
+}
+
    Mousetrap.bind('alt+h', function(e) {
          var current = document.getElementById("deft").value;
          var space = "";
-         snippet = current.replace(saved, "");
+         snippet = current.replace(current_node.text, "");
 
-         options[current_option] = snippet;
-
-         if (saved.charAt(saved.length - 1) != ' ') {
-            space = " ";
+         if (snippet === "" && !(current_node.parent === null)) {
+            current_node = current_node.parent;
+            current_node.current = undefined;
          }
-         document.getElementById("deft").value = saved + space;
-         document.getElementById("snippets").innerHTML = options;
+         else {
+            if (current_node.current_child() === undefined) {
+               current_node.add_child(new Tree.Node(current));
+               current_node.current = undefined;
+            } else {
+               current_node.current_child().text = current;
+               current_node.add_child(new Tree.Node(current_node.text));
+               current_node.current = undefined;
+            }
+         }
 
-         current_option = options.length;
-         options[options.length] = "";
+         document.getElementById("deft").value = current_node.text;
+         document.getElementById("snippets").innerHTML = display_children(current_node.children);
+
          });
 
    Mousetrap.bind('alt+l', function(e) {
-         if (saved != document.getElementById("deft").value) {
-            saved = document.getElementById("deft").value;
-            options = [];
-            current_option = 0;
-            document.getElementById("snippets").innerHTML = options;
+       var text = document.getElementById("deft").value
+         if (current_node.text != text) {
+            if (current_node.current_child() === undefined) {
+               current_node.add_child(new Tree.Node(text));
+               current_node = current_node.current_child();
+
+            } else {
+               current_node = current_node.current_child();
+            }
+
          }
+         document.getElementById("snippets").innerHTML = display_children(current_node.children);
          });
 
    Mousetrap.bind('alt+k', function(e) {
@@ -63,31 +137,39 @@
          var index;
          snippet = current.replace(saved, "");
 
-         options[current_option] = snippet;
-
-         current_option += 1;
-         if (current_option > (options.length - 1)) {
-            current_option = 0;
+         if (!(current_node.current_child() === undefined)) {
+            current_node.current_child().text = current;
+         } else {
+            if (snippet !== "") {
+               current_node.add_child(new Tree.Node(current));
+            }
          }
-         document.getElementById("deft").value = saved + options[current_option];
-         document.getElementById("snippets").innerHTML = options;
+
+         child = current_node.next_child();
+
+         document.getElementById("deft").value = child.text;
+         document.getElementById("snippets").innerHTML = display_children(current_node.children);
       });
 
    Mousetrap.bind('alt+j', function(e) {
-
          var current = document.getElementById("deft").value;
          var space = "";
          var index;
          snippet = current.replace(saved, "");
 
-         options[current_option] = snippet;
+         if (!(current_node.current_child() === undefined)) {
+            current_node.current_child().text = current;
+            } else {
+               if (snippet !== "") {
+                  current_node.add_child(new Tree.Node(current));
+               }
+            }
 
-         current_option -= 1;
-         if (current_option < 0) {
-            current_option = options.length - 1;
-         }
-         document.getElementById("deft").value = saved + options[current_option];
-         document.getElementById("snippets").innerHTML = options;
+         child = current_node.prev_child();
+
+         document.getElementById("deft").value = child.text;
+         document.getElementById("snippets").innerHTML = display_children(current_node.children);
+
       });
 
 </script>
