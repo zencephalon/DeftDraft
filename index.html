@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta charset="utf-8">
+
+<title>DeftDraft</title>
+
+<link rel="stylesheet" type="text/css" href="lib/css/bootstrap.min.css"></link>
+<script src="mousetrap.min.js"></script>
+
+<style type="text/css" media="screen">
+   #deft {
+      float: left;
+   }
+
+</style>
+
+<script type="text/javascript">
+   var saved = "";
+   var options = [];
+   var current_option = 0;
+
+   function existing_option(snippet) {
+      for (var i = 0; i < options.length; i++) {
+         if (snippet.substr(0, options[i].length) == options[i]) {
+            return i;
+         }
+      }
+      return -1;
+   }
+
+   Mousetrap.bind('alt+h', function(e) {
+         var current = document.getElementById("deft").value;
+         var space = "";
+         var index;
+         snippet = current.replace(saved, "");
+
+         if ((index = existing_option(snippet)) >= 0) {
+            options[index] = snippet;
+         } else {
+            options.push(snippet);
+         }
+
+         if (saved.charAt(saved.length - 1) != ' ') {
+            space = " ";
+         }
+         document.getElementById("deft").value = saved + space;
+         document.getElementById("snippets").innerHTML = options;
+         });
+
+   Mousetrap.bind('alt+l', function(e) {
+         if (saved != document.getElementById("deft").value) {
+            saved = document.getElementById("deft").value;
+            options = [];
+            current_option = 0;
+            document.getElementById("snippets").innerHTML = options;
+         }
+         });
+
+   Mousetrap.bind('alt+k', function(e) {
+
+         var current = document.getElementById("deft").value;
+         var space = "";
+         var index;
+         snippet = current.replace(saved, "");
+
+         if ((index = existing_option(snippet)) >= 0) {
+            options[index] = snippet;
+         } else {
+            options.push(snippet);
+         }
+
+         document.getElementById("deft").value = saved + options[current_option];
+         current_option += 1;
+         if (current_option > (options.length - 1)) {
+            current_option = 0;
+         }
+         document.getElementById("snippets").innerHTML = options;
+      });
+
+   Mousetrap.bind('alt+j', function(e) {
+
+         var current = document.getElementById("deft").value;
+         var space = "";
+         var index;
+         snippet = current.replace(saved, "");
+
+         if ((index = existing_option(snippet)) >= 0) {
+            options[index] = snippet;
+         } else {
+            options.push(snippet);
+         }
+
+         document.getElementById("deft").value = saved + options[current_option];
+         current_option -= 1;
+         if (current_option < 0) {
+            current_option = options.length - 1;
+         }
+         document.getElementById("snippets").innerHTML = options;
+      });
+
+</script>
+</head>
+<body>
+   <h2>DeftDraft</h2>
+   <textarea class="textarea mousetrap" id="deft" style="width: 810px; height: 200px"></textarea>
+   <div id="snippets"></div>
+
+</body>
+</html>
