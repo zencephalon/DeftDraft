@@ -33,20 +33,18 @@
    Mousetrap.bind('alt+h', function(e) {
          var current = document.getElementById("deft").value;
          var space = "";
-         var index;
          snippet = current.replace(saved, "");
 
-         if ((index = existing_option(snippet)) >= 0) {
-            options[index] = snippet;
-         } else {
-            options.push(snippet);
-         }
+         options[current_option] = snippet;
 
          if (saved.charAt(saved.length - 1) != ' ') {
             space = " ";
          }
          document.getElementById("deft").value = saved + space;
          document.getElementById("snippets").innerHTML = options;
+
+         current_option = options.length;
+         options[options.length] = "";
          });
 
    Mousetrap.bind('alt+l', function(e) {
@@ -65,17 +63,13 @@
          var index;
          snippet = current.replace(saved, "");
 
-         if ((index = existing_option(snippet)) >= 0) {
-            options[index] = snippet;
-         } else {
-            options.push(snippet);
-         }
+         options[current_option] = snippet;
 
-         document.getElementById("deft").value = saved + options[current_option];
          current_option += 1;
          if (current_option > (options.length - 1)) {
             current_option = 0;
          }
+         document.getElementById("deft").value = saved + options[current_option];
          document.getElementById("snippets").innerHTML = options;
       });
 
@@ -86,17 +80,13 @@
          var index;
          snippet = current.replace(saved, "");
 
-         if ((index = existing_option(snippet)) >= 0) {
-            options[index] = snippet;
-         } else {
-            options.push(snippet);
-         }
+         options[current_option] = snippet;
 
-         document.getElementById("deft").value = saved + options[current_option];
          current_option -= 1;
          if (current_option < 0) {
             current_option = options.length - 1;
          }
+         document.getElementById("deft").value = saved + options[current_option];
          document.getElementById("snippets").innerHTML = options;
       });
 
