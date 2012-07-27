@@ -6,12 +6,15 @@
 
 <title>DeftDraft</title>
 
-<link rel="stylesheet" type="text/css" href="lib/css/bootstrap.min.css"></link>
 <script src="mousetrap.min.js"></script>
 
 <style type="text/css" media="screen">
    #deft {
       float: left;
+   }
+
+   .highlight {
+      background-color: #ffeeee;
    }
 
 </style>
@@ -23,11 +26,13 @@ Tree.prototype = {
 children: [],
           parent: null,
           text: "",
+          depth: 0,
           current: null
 };
 
 Tree.prototype.add_child = function(child) {
    child.parent = this;
+   child.depth = this.depth + 1;
    this.children.push(child);
    this.current = this.children.length - 1;
 }
@@ -46,6 +51,15 @@ Tree.prototype.next_child = function() {
 
 Tree.prototype.current_child = function() {
    return this.children[this.current];
+}
+
+Tree.prototype.get_empty_child = function() {
+   for (var i = 0; i < this.children.length; i++) {
+      if (this.children[i].text === this.text) {
+         return i;
+      }
+   }
+   return -1;
 }
 
 Tree.prototype.prev_child = function() {
@@ -82,10 +96,20 @@ Tree.Node = function(text) {
    }
 
 function display_children(children) {
-   var res = "";
+   var res = "Depth: "
+   res += current_node.depth.toString();
+   res += "<br />";
    for (var i = 0; i < children.length; i++) {
+      if (current_node.current === i) {
+         res += "<div class='highlight'>";
+      }
+      res += i.toString() + " ";
       res += children[i].text.replace(current_node.text, "");
-      res += "<br/>";
+      if (current_node.current === i) {
+         res += "</div>";
+      } else {
+         res += "<br/>";
+      }
    }
    return res;
 }
@@ -102,11 +126,17 @@ function display_children(children) {
          else {
             if (current_node.current_child() === undefined) {
                current_node.add_child(new Tree.Node(current));
-               current_node.current = undefined;
             } else {
                current_node.current_child().text = current;
-               current_node.add_child(new Tree.Node(current_node.text));
+            }
+
+            var index = current_node.get_empty_child();
+
+            if (index < 0) {
                current_node.current = undefined;
+               current_node.add_child(new Tree.Node(current_node.text));
+            } else {
+               current_node.current = index;
             }
          }
 
@@ -121,8 +151,8 @@ function display_children(children) {
             if (current_node.current_child() === undefined) {
                current_node.add_child(new Tree.Node(text));
                current_node = current_node.current_child();
-
             } else {
+               current_node.current_child().text = text;
                current_node = current_node.current_child();
             }
 
@@ -135,12 +165,12 @@ function display_children(children) {
          var current = document.getElementById("deft").value;
          var space = "";
          var index;
-         snippet = current.replace(saved, "");
+         snippet = current.replace(current_node.text, "");
 
          if (!(current_node.current_child() === undefined)) {
             current_node.current_child().text = current;
          } else {
-            if (snippet !== "") {
+            if (!(snippet === "")) {
                current_node.add_child(new Tree.Node(current));
             }
          }
@@ -155,7 +185,7 @@ function display_children(children) {
          var current = document.getElementById("deft").value;
          var space = "";
          var index;
-         snippet = current.replace(saved, "");
+         snippet = current.replace(current_node.text, "");
 
          if (!(current_node.current_child() === undefined)) {
             current_node.current_child().text = current;
@@ -177,7 +207,7 @@ function display_children(children) {
 <body>
    <h2>DeftDraft</h2>
    <textarea class="textarea mousetrap" id="deft" style="width: 810px; height: 200px"></textarea>
-   <div id="snippets"></div>
+   <div id="snippets">Depth: 0</div>
 
 </body>
 </html>
