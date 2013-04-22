@@ -25,7 +25,7 @@
 </style>
 
 <script type="text/javascript">
-    var stack_list = [[""]];
+    var stack_list = [[]];
     var stack_pos = [0];
     var current_stack = 0;
     var saved = "";
@@ -33,15 +33,22 @@
 
 
     function display_stack(stack) {
-        var html = "";
+        var html = "selection: " + current_option + "<br/>";
         for (var item in stack) {
-            html += item;
+            html += stack[item];
             html += "<br />"
         }
+        return html;
     }
 
    // cycle stacks left
    Mousetrap.bind('alt+h', function(e) {
+if (e.preventDefault) {
+        e.preventDefault();
+    } else {
+        // internet explorer
+        e.returnValue = false;
+    }
          var current = document.getElementById("deft").value;
 
          current_stack--;
@@ -58,6 +65,12 @@
 
     //cycle stacks right
    Mousetrap.bind('alt+l', function(e) {
+if (e.preventDefault) {
+        e.preventDefault();
+    } else {
+        // internet explorer
+        e.returnValue = false;
+    }
          var current = document.getElementById("deft").value;
 
          current_stack++;
@@ -74,6 +87,12 @@
 
     // selection up
    Mousetrap.bind('alt+k', function(e) {
+if (e.preventDefault) {
+        e.preventDefault();
+    } else {
+        // internet explorer
+        e.returnValue = false;
+    }
          var current = document.getElementById("deft").value;
 
          stack_pos[current_stack]++;
@@ -89,11 +108,17 @@
       });
 
    Mousetrap.bind('alt+j', function(e) {
+if (e.preventDefault) {
+        e.preventDefault();
+    } else {
+        // internet explorer
+        e.returnValue = false;
+    }
          var current = document.getElementById("deft").value;
 
          stack_pos[current_stack]--;
          if (stack_pos[current_stack] < 0) {
-             stack_pos[current_stack] = stack_list[current_stack].length;
+             stack_pos[current_stack] = stack_list[current_stack].length - 1;
          }
 
          var new_option = stack_list[current_stack][stack_pos[current_stack]];
@@ -103,7 +128,36 @@
          document.getElementById("snippets").innerHTML = display_stack(stack_list[current_stack]);
       });
 
-    Mousetrap.bind('alt+s', function(e) {
+        Mousetrap.bind('alt+s', function(e) {
+            if (e.preventDefault) {
+            e.preventDefault();
+            } else {
+            // internet explorer
+            e.returnValue = false;
+            }
+            saved = document.getElementById("deft").value;
+            current_option = "";
+
+            stack_list.push([]);
+            stack_pos.push(0);
+            current_stack = stack_list.length - 1;
+         document.getElementById("snippets").innerHTML = display_stack(stack_list[current_stack]);
+        });
+
+    Mousetrap.bind('alt+d', function(e) {
+if (e.preventDefault) {
+        e.preventDefault();
+    } else {
+        // internet explorer
+        e.returnValue = false;
+    }
+            var current = document.getElementById("deft").value;
+            var snipped = current.replace(saved, "");
+
+            document.getElementById("deft").value = saved;
+            stack_list[current_stack].push(snipped);
+         document.getElementById("snippets").innerHTML = display_stack(stack_list[current_stack]);
+            });
 
 
 </script>
@@ -111,7 +165,7 @@
 <body>
    <h2>DeftDraft</h2>
    <textarea class="textarea mousetrap" id="deft" style="width: 810px; height: 200px"></textarea>
-   <div id="snippets">Depth: 0</div>
+   <div id="snippets">selection:</div>
 
 </body>
 </html>
