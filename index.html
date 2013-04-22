@@ -25,187 +25,86 @@
 </style>
 
 <script type="text/javascript">
+    var stack_list = [[""]];
+    var stack_pos = [0];
+    var current_stack = 0;
+    var saved = "";
+    var current_option = "";
 
-   function Tree() {};
-Tree.prototype = {
-children: [],
-          parent: null,
-          text: "",
-          depth: 0,
-          current: null
-};
 
-Tree.prototype.add_child = function(child) {
-   child.parent = this;
-   child.depth = this.depth + 1;
-   this.children.push(child);
-   this.current = this.children.length - 1;
-}
+    function display_stack(stack) {
+        var html = "";
+        for (var item in stack) {
+            html += item;
+            html += "<br />"
+        }
+    }
 
-Tree.prototype.next_child = function() {
-   if (this.current === undefined) {
-      this.current = 0;
-   } else {
-      this.current += 1;
-   }
-   if (this.current > (this.children.length - 1)) {
-      this.current = 0;
-   }
-   return this.children[this.current];
-}
-
-Tree.prototype.current_child = function() {
-   return this.children[this.current];
-}
-
-Tree.prototype.get_empty_child = function() {
-   for (var i = 0; i < this.children.length; i++) {
-      if (this.children[i].text === this.text) {
-         return i;
-      }
-   }
-   return -1;
-}
-
-Tree.prototype.prev_child = function() {
-   if (this.current === undefined) {
-      this.current = this.children.length - 1;
-   } else {
-      this.current -= 1;
-   }
-   if (this.current < 0) {
-      this.current = this.children.length - 1;
-   }
-   return this.children[this.current];
-}
-
-Tree.Node = function(text) {
-   var tree = new Tree();
-   tree.text = text;
-   tree.children = [];
-   return tree;
-}
-
-   var saved = "";
-   var options = [];
-   var current_option = 0;
-   var current_node = new Tree;
-
-   function existing_option(snippet) {
-      for (var i = 0; i < options.length; i++) {
-         if (snippet.substr(0, options[i].length) == options[i]) {
-            return i;
-         }
-      }
-      return -1;
-   }
-
-function display_children(children) {
-   var res = "Depth: "
-   res += current_node.depth.toString();
-   res += "<br />";
-   for (var i = 0; i < children.length; i++) {
-      if (current_node.current === i) {
-         res += "<div class='highlight'>";
-      }
-      res += i.toString() + " ";
-      res += children[i].text.replace(current_node.text, "");
-      if (current_node.current === i) {
-         res += "</div>";
-      } else {
-         res += "<br/>";
-      }
-   }
-   return res;
-}
-
+   // cycle stacks left
    Mousetrap.bind('alt+h', function(e) {
          var current = document.getElementById("deft").value;
-         var space = "";
-         snippet = current.replace(current_node.text, "");
 
-         if (snippet === "" && !(current_node.parent === null)) {
-            current_node = current_node.parent;
-            current_node.current = undefined;
-         }
-         else {
-            if (current_node.current_child() === undefined) {
-               current_node.add_child(new Tree.Node(current));
-            } else {
-               current_node.current_child().text = current;
-            }
-
-            var index = current_node.get_empty_child();
-
-            if (index < 0) {
-               current_node.current = undefined;
-               current_node.add_child(new Tree.Node(current_node.text));
-            } else {
-               current_node.current = index;
-            }
+         current_stack--;
+         if (current_stack < 0) {
+            current_stack = stack_list.length - 1;
          }
 
-         document.getElementById("deft").value = current_node.text;
-         document.getElementById("snippets").innerHTML = display_children(current_node.children);
-
+         var new_option = stack_list[current_stack][stack_pos[current_stack]];
+         document.getElementById("deft").value = current.replace(current_option, new_option);
+         current_option = new_option;
+         
+         document.getElementById("snippets").innerHTML = display_stack(stack_list[current_stack]);
          });
 
+    //cycle stacks right
    Mousetrap.bind('alt+l', function(e) {
-       var text = document.getElementById("deft").value
-         if (current_node.text != text) {
-            if (current_node.current_child() === undefined) {
-               current_node.add_child(new Tree.Node(text));
-               current_node = current_node.current_child();
-            } else {
-               current_node.current_child().text = text;
-               current_node = current_node.current_child();
-            }
+         var current = document.getElementById("deft").value;
 
+         current_stack++;
+         if (current_stack >= stack_list.length) {
+            current_stack = 0;
          }
-         document.getElementById("snippets").innerHTML = display_children(current_node.children);
+
+         var new_option = stack_list[current_stack][stack_pos[current_stack]];
+         document.getElementById("deft").value = current.replace(current_option, new_option);
+         current_option = new_option;
+
+         document.getElementById("snippets").innerHTML = display_stack(stack_list[current_stack]);
          });
 
+    // selection up
    Mousetrap.bind('alt+k', function(e) {
-
          var current = document.getElementById("deft").value;
-         var space = "";
-         var index;
-         snippet = current.replace(current_node.text, "");
 
-         if (!(current_node.current_child() === undefined)) {
-            current_node.current_child().text = current;
-         } else {
-            if (!(snippet === "")) {
-               current_node.add_child(new Tree.Node(current));
-            }
+         stack_pos[current_stack]++;
+         if (stack_pos[current_stack] >= stack_list[current_stack].length) {
+             stack_pos[current_stack] = 0;
          }
 
-         child = current_node.next_child();
+         var new_option = stack_list[current_stack][stack_pos[current_stack]];
+         document.getElementById("deft").value = current.replace(current_option, new_option);
+         current_option = new_option;
 
-         document.getElementById("deft").value = child.text;
-         document.getElementById("snippets").innerHTML = display_children(current_node.children);
+         document.getElementById("snippets").innerHTML = display_stack(stack_list[current_stack]);
       });
 
    Mousetrap.bind('alt+j', function(e) {
          var current = document.getElementById("deft").value;
-         var space = "";
-         var index;
-         snippet = current.replace(current_node.text, "");
 
-         if (!(current_node.current_child() === undefined)) {
-            current_node.current_child().text = current;
-            } else {
-               if (snippet !== "") {
-                  current_node.add_child(new Tree.Node(current));
-               }
-            }
+         stack_pos[current_stack]--;
+         if (stack_pos[current_stack] < 0) {
+             stack_pos[current_stack] = stack_list[current_stack].length;
+         }
 
-         child = current_node.prev_child();
+         var new_option = stack_list[current_stack][stack_pos[current_stack]];
+         document.getElementById("deft").value = current.replace(current_option, new_option);
+         current_option = new_option;
 
-         document.getElementById("deft").value = child.text;
-         document.getElementById("snippets").innerHTML = display_children(current_node.children);
-
+         document.getElementById("snippets").innerHTML = display_stack(stack_list[current_stack]);
       });
+
+    Mousetrap.bind('alt+s', function(e) {
+
 
 </script>
 </head>
