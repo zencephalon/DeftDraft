@@ -90,14 +90,6 @@ function left() {
     buffers[current].set();
 }
 
-
-var stack_list = [[]];
-var stack_pos = [0];
-var current_stack = 0;
-var saved = "";
-var current_option = "";
-
-
 function display_stack() {
     var html = "";
     for (var i = 0; i < buffers.length; i++) {
@@ -107,56 +99,32 @@ function display_stack() {
     document.getElementById("buffers").innerHTML = html;
 }
 
-// cycle stacks left
-Mousetrap.bind('alt+s', function(e) {
-    if (e.preventDefault) {
-        e.preventDefault();
-    } else {
-        // internet explorer
-        e.returnValue = false;
-    }
+function status() {
+    var html = "<b>" + (current + 1) + "</b>" + "/" + buffers.length;
+    document.getElementById("buffers").innerHTML = html;
+}
 
-    commit();
-    display_stack();
-});
+function bind(sc, f) {
+    Mousetrap.bind(sc, function(e) {
+        if (e.preventDefault) {
+            e.preventDefault();
+        } else {
+            // internet explorer
+            e.returnValue = false;
+        }
 
-Mousetrap.bind('alt+h', function(e) {
-    if (e.preventDefault) {
-        e.preventDefault();
-    } else {
-        // internet explorer
-        e.returnValue = false;
-    }
+        f();
 
-    left();
+        status();
+    });
+}
 
-    display_stack();
-});
+bind('ctrl+h', function() { left(); });
+bind('ctrl+j', function() { scratch(); });
+bind('ctrl+k', function() { commit(); });
+bind('ctrl+l', function() { right(); });
 
-//cycle stacks right
-Mousetrap.bind('alt+l', function(e) {
-    if (e.preventDefault) {
-        e.preventDefault();
-    } else {
-        // internet explorer
-        e.returnValue = false;
-    }
-    right();
-
-    display_stack();
-});
-
-Mousetrap.bind('alt+space', function(e) {
-    if (e.preventDefault) {
-        e.preventDefault();
-    } else {
-        // internet explorer
-        e.returnValue = false;
-    }
-
-    scratch();
-    display_stack();
-});
-
-
-
+bind('ctrl+left', function() { left(); });
+bind('ctrl+right', function() { right(); });
+bind('ctrl+s', function() { commit(); });
+bind('ctrl+space', function() { scratch(); });

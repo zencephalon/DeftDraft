@@ -18,7 +18,9 @@
       margin-right: 30px;
       background-color: #eeeedd;
    }
-
+   #buffers {
+       text-align: right;
+   }
    .highlight {
       background-color: #ffeeee;
    }
@@ -30,9 +32,8 @@
 </script>
 </head>
 <body>
-   <h2>DeftDraft</h2>
+    <h2>DeftDraft : <span id="buffers"><b>1</b>/1</span></h2>
    <textarea class="textarea mousetrap" id="deft" style="width: 810px; height: 200px"></textarea>
-   <div id="buffers">Buffer 0/0</div>
 
 </body>
 <script src="deftdraft.js"></script>
