@@ -14,12 +14,21 @@
    }
    #deft {
       float: left;
-      font-size: 2em;
+      font-size: 1.4em;
       margin-right: 30px;
       background-color: #eeeedd;
+      width: 30em;
+      height: 30em;
+      position: relative;
    }
    #buffers {
        text-align: right;
+   }
+   #container {
+       margin: 0px auto;
+       max-width: 60em;
+   }
+   #sidebar {
    }
    .highlight {
       background-color: #ffeeee;
@@ -32,9 +41,24 @@
 </script>
 </head>
 <body>
-    <h2>DeftDraft : <span id="buffers"><b>1</b>/1</span></h2>
-   <textarea class="textarea mousetrap" id="deft" style="width: 810px; height: 200px"></textarea>
-
+    <div id="container">
+        <h2>DD - <span id="buffers">Draft: <b>1</b>/1 - Commit: 0</span></h2>
+        <textarea class="textarea mousetrap" id="deft"></textarea>
+        <div id="sidebar">
+            <p>Welcome. <em>DD</em> has two unique concepts you need to know about: drafts and commits.</p>
+            <p>Type some text. Then <em>double-tap the space-bar</em>. You used the <b>scratch</b> command which: saves the current draft, starts a new draft at the last commit.</p>
+            <p>Type more text, then <b>scratch</b> again. Now <em>hit ctrl-j</em>. You are back to your second draft. Type some more text here, then <em>hit ctrl-j</em>. You are back to your first draft. <b>Cycle</b> in the other direction: <em>hit ctrl-k</em>.</p>
+            <p>The second draft was saved when you cycled away. Cycling between drafts is a powerful way to try out different sentences and pick the best.</p>
+            <p>Create some more drafts and practice cycling. Pick a favorite, then <em>hit ctrl-space</em>. This is your first <b>commit</b>. When you <b>commit</b> you are moving forward. Your previous drafts are cleared, and new drafts begin from the <b>commit</b>.</p>
+            <p>Try scratching and cycling from your new point of progress.</p>
+            <p>
+            <em>space+space</em>: <b>scratch</b></br>
+            <em>ctrl-space</em>: <b>commit</b></br>
+            <em>ctrl-j</em>: <b>cycle</b> down</br>
+            <em>ctrl-k</em>: <b>cycle</b> up</br>
+            </p>
+        </div>
+    </div>
 </body>
 <script src="deftdraft.js"></script>
 </html>

@@ -42,6 +42,7 @@ var sbuffer = new Buffer('', 0);
 var buffers = [sbuffer];
 var deft = document.getElementById("deft");
 var current = 0;
+var commits = 0;
 
 function Buffer(text, cursor) {
     this.text = text; this.cursor = cursor;
@@ -64,6 +65,7 @@ function commit() {
     sbuffer = getBuffer();
     buffers = [sbuffer];
     current = 0;
+    commits++;
 }
 
 function save() {
@@ -90,44 +92,29 @@ function left() {
     buffers[current].set();
 }
 
-function display_stack() {
-    var html = "";
-    for (var i = 0; i < buffers.length; i++) {
-        html += buffers[i].toString();
-        html += "<br />"
-    }
-    document.getElementById("buffers").innerHTML = html;
-}
-
 function status() {
-    var html = "<b>" + (current + 1) + "</b>" + "/" + buffers.length;
+    var html = "Draft: <b>" + (current + 1) + "</b>" + "/" + buffers.length;
+    html += " - Commit: <b>" + commits + "</b>"
     document.getElementById("buffers").innerHTML = html;
 }
 
 function bind(sc, f) {
     Mousetrap.bind(sc, function(e) {
-        if (e.preventDefault) {
-            e.preventDefault();
-        } else {
-            // internet explorer
-            e.returnValue = false;
-        }
-
+        if (e.preventDefault) { e.preventDefault(); } else { e.returnValue = false; }
         f();
-
         status();
     });
 }
 
-bind('alt+h', function() { left(); });
-bind('alt+j', function() { scratch(); });
-bind('alt+k', function() { commit(); });
-bind('alt+l', function() { right(); });
+bind('ctrl+h', function() { left(); });
+bind('ctrl+j', function() { right(); });
+bind('ctrl+k', function() { left(); });
+bind('ctrl+l', function() { right(); });
 
-bind('ctrl+left', function() { left(); });
-bind('ctrl+right', function() { right(); });
-bind('ctrl+up', function() { commit(); });
-bind('ctrl+down', function() { scratch(); });
+bind('alt+left', function() { left(); });
+bind('alt+right', function() { right(); });
+bind('alt+up', function() { commit(); });
+bind('alt+down', function() { scratch(); });
 
 bind('ctrl+space', function() { commit(); });
 bind('space space', function() { scratch(); });
