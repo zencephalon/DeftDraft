@@ -57,7 +57,7 @@ Buffer.prototype.toString = function() {
 }
 
 function getBuffer() {
-    return new Buffer(deft.value, getCaret(deft));
+    return new Buffer(deft.value.replace(/ +/g, ' '), getCaret(deft));
 }
 
 function commit() {
@@ -119,12 +119,15 @@ function bind(sc, f) {
     });
 }
 
-bind('ctrl+h', function() { left(); });
-bind('ctrl+j', function() { scratch(); });
-bind('ctrl+k', function() { commit(); });
-bind('ctrl+l', function() { right(); });
+bind('alt+h', function() { left(); });
+bind('alt+j', function() { scratch(); });
+bind('alt+k', function() { commit(); });
+bind('alt+l', function() { right(); });
 
 bind('ctrl+left', function() { left(); });
 bind('ctrl+right', function() { right(); });
-bind('ctrl+s', function() { commit(); });
-bind('ctrl+space', function() { scratch(); });
+bind('ctrl+up', function() { commit(); });
+bind('ctrl+down', function() { scratch(); });
+
+bind('ctrl+space', function() { commit(); });
+bind('space space', function() { scratch(); });
