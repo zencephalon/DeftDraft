@@ -43,6 +43,13 @@ var buffers = [sbuffer];
 var deft = document.getElementById("deft");
 var current = 0;
 var commits = 0;
+var changes = 0;
+
+deft.oninput = function() {
+    changes++;
+    status();
+};
+
 
 function Buffer(text, cursor) {
     this.text = text; this.cursor = cursor;
@@ -94,7 +101,8 @@ function left() {
 
 function status() {
     var html = "Draft: <b>" + (current + 1) + "</b>" + "/" + buffers.length;
-    html += " - Commit: <b>" + commits + "</b>"
+    html += " - Commit: <b>" + commits + "</b>";
+    html += " - Changes: <b>" + changes + "</b>";
     document.getElementById("buffers").innerHTML = html;
 }
 
