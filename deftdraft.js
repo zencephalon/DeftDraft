@@ -9,14 +9,34 @@ var text = "";
 var cursor_pos = 0;
 var change_type = "";
 var changes = 0;
+var x = 0;
+var y = 0;
 
 track_changes = function() {
     now_text = deft.value;
     now_cursor_pos = getCaret(deft);
 
+    if (now_text == text) {
+        change_type = "no change";
+    } else if (now_text.length > text.length) {
+        if ((x = (now_text.length - text.length)) == (y = (now_cursor_pos - cursor_pos))) {
+            change_type = "simple insert";
+        } else {
+            change_type = "complex insert";
+        }
+    } else if (now_text.length < text.length) {
+        if ((now_text.length - text.length) == (now_cursor_pos - cursor_pos)) {
+            change_type = "simple delete";
+        } else {
+            change_type = "complex delete";
+        }
+    } else {
+        change_type = "substitution";
+    }
+
     changes++;
     text = now_text;
-    cursor_pos = now_cursor_pos;
+    cursor_pos = getCaret(deft);
     status();
 };
 
@@ -25,7 +45,7 @@ deft.onmouseup = track_changes;
 
 deft.onkeyup = track_changes;
 
-deft.oninput = track_changes;
+//deft.oninput = track_changes;
 
 function Buffer(text, cursor) {
     this.text = text; this.cursor = cursor;
@@ -86,7 +106,7 @@ function status1() {
 }
 
 function status2() {
-    html = "cursorpos: " + cursor_pos;
+    html = "cursorpos: " + cursor_pos + " change: " + change_type + " x: " + x + " y: " + y;
     document.getElementById("buffers").innerHTML = html;
 }
 
