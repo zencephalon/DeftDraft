@@ -1,55 +1,31 @@
-function setSelectionRange(input, selectionStart, selectionEnd) {
-    if (input.setSelectionRange) {
-        input.focus();
-        input.setSelectionRange(selectionStart, selectionEnd);
-    }
-    else if (input.createTextRange) {
-        var range = input.createTextRange();
-        range.collapse(true);
-        range.moveEnd('character', selectionEnd);
-        range.moveStart('character', selectionStart);
-        range.select();
-    }
-}
-
-function setCaret(input, pos) {
-    setSelectionRange(input, pos, pos);
-}    
-
-function getCaret(el) {
-    if (el.selectionStart) {
-        return el.selectionStart;
-    } else if (document.selection) {
-        el.focus();
-
-        var r = document.selection.createRange();
-        if (r == null) {
-            return 0;
-        }
-
-        var re = el.createTextRange(),
-            rc = re.duplicate();
-        re.moveToBookmark(r.getBookmark());
-        rc.setEndPoint('EndToStart', re);
-
-        return rc.text.length;
-    } 
-    return 0;
-}
-
 // saved buffer
 var sbuffer = new Buffer('', 0);
 var buffers = [sbuffer];
 var deft = document.getElementById("deft");
 var current = 0;
 var commits = 0;
+
+var text = "";
+var cursor_pos = 0;
+var change_type = "";
 var changes = 0;
 
-deft.oninput = function() {
+track_changes = function() {
+    now_text = deft.value;
+    now_cursor_pos = getCaret(deft);
+
     changes++;
+    text = now_text;
+    cursor_pos = now_cursor_pos;
     status();
 };
 
+
+deft.onmouseup = track_changes;
+
+deft.onkeyup = track_changes;
+
+deft.oninput = track_changes;
 
 function Buffer(text, cursor) {
     this.text = text; this.cursor = cursor;
@@ -100,9 +76,17 @@ function left() {
 }
 
 function status() {
+    status2();
+}
+
+function status1() {
     var html = "Draft: <b>" + (current + 1) + "</b>" + "/" + buffers.length;
     html += " - Commit: <b>" + commits + "</b>";
-    html += " - Changes: <b>" + changes + "</b>";
+    document.getElementById("buffers").innerHTML = html;
+}
+
+function status2() {
+    html = "cursorpos: " + cursor_pos;
     document.getElementById("buffers").innerHTML = html;
 }
 
