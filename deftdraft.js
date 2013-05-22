@@ -21,6 +21,7 @@ track_changes = function() {
     } else if (now_text.length > text.length) {
         if ((x = (now_text.length - text.length)) == (y = (now_cursor_pos - cursor_pos))) {
             change_type = "simple insert";
+            diff = [["ins", now_text.substr(cursor_pos, y)]];
         } else {
             change_type = "complex insert";
         }
