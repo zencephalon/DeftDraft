@@ -19,6 +19,9 @@ body {
 }
 #sidebar {
 }
+#dd-nav {
+    display: none;
+}
 .highlight {
     background-color: #ffeeee;
 }

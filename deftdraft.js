@@ -4,7 +4,7 @@ $(document).ready(function() {
                 timeout: 0,
                 next: '#next',
                 prev: '#prev',
-                speed: 500
+                speed: 250
 	});
 });
 
@@ -58,6 +58,8 @@ function save() {
 function scratch() {
     save();
     current = buffers.length;
+    switch_illusion();
+    $('#next').trigger('click');
     buffers.push(sbuffer);
     sbuffer.set();
 }
@@ -79,9 +81,9 @@ function left() {
 }
 
 function status() {
-    /*var html = "Draft: <b>" + (current + 1) + "</b>" + "/" + buffers.length;
+    var html = "Draft: <b>" + (current + 1) + "</b>" + "/" + buffers.length;
     html += " - Commit: <b>" + commits + "</b>"
-    document.getElementById("buffers").innerHTML = html;*/
+    document.getElementById("buffers").innerHTML = html;
 }
 
 function bind(sc, f) {
