@@ -65,19 +65,23 @@ function scratch() {
 }
 
 function right() {
-    save();
-    current = (current + 1) % buffers.length;
-    switch_illusion();
-    $('#next').trigger('click');
-    buffers[current].set();
+    if (buffers.length > 1) {
+        save();
+        current = (current + 1) % buffers.length;
+        switch_illusion();
+        $('#next').trigger('click');
+        buffers[current].set();
+    }
 }
 
 function left() {
-    save();
-    current = current == 0 ? (buffers.length - 1) : current - 1;
-    switch_illusion();
-    $('#prev').trigger('click');
-    buffers[current].set();
+    if (buffers.length > 1) {
+        save();
+        current = current == 0 ? (buffers.length - 1) : current - 1;
+        switch_illusion();
+        $('#prev').trigger('click');
+        buffers[current].set();
+    }
 }
 
 function status() {

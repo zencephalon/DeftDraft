@@ -2,13 +2,17 @@ body {
     background-color: #ffffee;
 }
 .deft {
-    float: left;
     font-size: 1.4em;
     margin-right: 30px;
     background-color: #eeeedd;
     width: 30em;
     height: 30em;
+}
+.drafts {
+    float: left;
+    width: 30em;
     position: relative;
+    margin-right: 1em;
 }
 #buffers {
     text-align: right;
@@ -18,6 +22,7 @@ body {
     max-width: 60em;
 }
 #sidebar {
+    float: right;
 }
 #dd-nav {
     display: none;
