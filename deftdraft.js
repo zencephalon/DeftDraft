@@ -1,6 +1,6 @@
 $(document).ready(function() {
     $('.drafts').cycle({
-		fx: 'scrollHorz', // choose your transition type, ex: fade, scrollUp, shuffle, etc...
+		fx: 'shuffle', // choose your transition type, ex: fade, scrollUp, shuffle, etc...
                 timeout: 0,
                 next: '#next',
                 prev: '#prev',
@@ -11,15 +11,25 @@ $(document).ready(function() {
 // saved buffer
 var sbuffer = new Buffer('', 0);
 var buffers = [sbuffer];
-var deft = document.getElementById("deft");
 var current = 0;
 var commits = 0;
+var current_illusion = "esil";
+
+function switch_illusion() {
+    current_illusion = (current_illusion == "esil") ? "isar" : "esil";
+    $('#' + current_illusion).focus();
+}
+
+function illusion() {
+    return document.getElementById(current_illusion);
+}
 
 function Buffer(text, cursor) {
     this.text = text; this.cursor = cursor;
 }
 
 Buffer.prototype.set = function() {
+    deft = illusion();
     deft.value = this.text;
     setCaret(deft, this.cursor);
 }
@@ -29,6 +39,7 @@ Buffer.prototype.toString = function() {
 }
 
 function getBuffer() {
+    deft = illusion();
     return new Buffer(deft.value.replace(/ +/g, ' '), getCaret(deft));
 }
 
@@ -54,19 +65,23 @@ function scratch() {
 function right() {
     save();
     current = (current + 1) % buffers.length;
+    switch_illusion();
+    $('#next').trigger('click');
     buffers[current].set();
 }
 
 function left() {
     save();
     current = current == 0 ? (buffers.length - 1) : current - 1;
+    switch_illusion();
+    $('#prev').trigger('click');
     buffers[current].set();
 }
 
 function status() {
-    var html = "Draft: <b>" + (current + 1) + "</b>" + "/" + buffers.length;
+    /*var html = "Draft: <b>" + (current + 1) + "</b>" + "/" + buffers.length;
     html += " - Commit: <b>" + commits + "</b>"
-    document.getElementById("buffers").innerHTML = html;
+    document.getElementById("buffers").innerHTML = html;*/
 }
 
 function bind(sc, f) {

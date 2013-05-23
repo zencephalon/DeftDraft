@@ -1,7 +1,7 @@
 body {
     background-color: #ffffee;
 }
-#deft {
+.deft {
     float: left;
     font-size: 1.4em;
     margin-right: 30px;

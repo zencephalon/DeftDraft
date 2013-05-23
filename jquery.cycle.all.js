@@ -1040,7 +1040,7 @@ $.fn.cycle.transitions.shuffle = function($cont, $slides, opts) {
 		opts.speedAdjusted = true;
 	}
 	opts.random = 0;
-	opts.shuffle = opts.shuffle || {left:-w, top:15};
+	opts.shuffle = opts.shuffle || {left:w, top:15};
 	opts.els = [];
 	for (i=0; i < $slides.length; i++)
 		opts.els.push($slides[i]);
