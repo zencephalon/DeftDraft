@@ -1,0 +1,24 @@
+body {
+    background-color: #ffffee;
+}
+#deft {
+    float: left;
+    font-size: 1.4em;
+    margin-right: 30px;
+    background-color: #eeeedd;
+    width: 30em;
+    height: 30em;
+    position: relative;
+}
+#buffers {
+    text-align: right;
+}
+#container {
+    margin: 0px auto;
+    max-width: 60em;
+}
+#sidebar {
+}
+.highlight {
+    background-color: #ffeeee;
+}
