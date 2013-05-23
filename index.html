@@ -7,58 +7,35 @@
 <title>DeftDraft</title>
 
 <script src="mousetrap.min.js"></script>
+<!-- include jQuery library -->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+<!-- include Cycle plugin -->
+<script type="text/javascript" src="jquery.cycle.all.js"></script>
+<link rel="stylesheet" href="dd-style.css">
 
-<style type="text/css" media="screen">
-   body {
-      background-color: #ffffee;
-   }
-   #deft {
-      float: left;
-      font-size: 1.4em;
-      margin-right: 30px;
-      background-color: #eeeedd;
-      width: 30em;
-      height: 30em;
-      position: relative;
-   }
-   #buffers {
-       text-align: right;
-   }
-   #container {
-       margin: 0px auto;
-       max-width: 60em;
-   }
-   #sidebar {
-   }
-   .highlight {
-      background-color: #ffeeee;
-   }
-
-</style>
-
-<script type="text/javascript">
-
-</script>
 </head>
 <body>
     <div id="container">
         <h2>DD - <span id="buffers">Draft: <b>1</b>/1 - Commit: 0</span></h2>
-        <textarea class="textarea mousetrap" id="deft"></textarea>
-        <div id="sidebar">
-            <p>Welcome. <em>DD</em> has two unique concepts you need to know about: drafts and commits.</p>
-            <p>Type some text. Then <em>hit ctrl-space</em>. You used the <b>scratch</b> command which: saves the current draft, starts a new draft at the last commit.</p>
-            <p>Type more text, then <b>scratch</b> again. Now <em>hit ctrl-h</em>. You are back to your second draft. Type some more text here, then <em>hit ctrl-h</em>. You are back to your first draft. <b>Cycle</b> in the other direction: <em>hit ctrl-l</em>.</p>
-            <p>The second draft was saved when you cycled away. Cycling between drafts is a powerful way to try out different sentences and pick the best.</p>
-            <p>Create some more drafts and practice cycling. Pick a favorite, then <em>hit ctrl-s</em>. This is your first <b>commit</b>. When you <b>commit</b> you are moving forward. Your previous drafts are cleared, and new drafts begin from the <b>commit</b>.</p>
-            <p>Try scratching and cycling from your new point of progress.</p>
-            <p>
-            <em>ctrl-space</em>: <b>scratch</b></br>
-            <em>ctrl-s</em>: <b>commit</b></br>
-            <em>ctrl-j</em>: <b>cycle</b> down</br>
-            <em>ctrl-k</em>: <b>cycle</b> up</br>
-            </p>
-        </div>
+	<div class="drafts">
+            <textarea class="textarea mousetrap deft" id="esil"></textarea>
+            <textarea class="textarea mousetrap deft" id="isar"></textarea>
+	</div>
+        <p>Welcome. <em>DD</em> has two unique concepts you need to know about: drafts and commits.</p>
+        <p>Type some text. Then <em>hit ctrl-space</em>. You used the <b>scratch</b> command which: saves the current draft, starts a new draft at the last commit.</p>
+        <p>Type more text, then <b>scratch</b> again. Now <em>hit ctrl-h</em>. You are back to your second draft. Type some more text here, then <em>hit ctrl-h</em>. You are back to your first draft. <b>Cycle</b> in the other direction: <em>hit ctrl-l</em>.</p>
+        <p>The second draft was saved when you cycled away. Cycling between drafts is a powerful way to try out different sentences and pick the best.</p>
+        <p>Create some more drafts and practice cycling. Pick a favorite, then <em>hit ctrl-s</em>. This is your first <b>commit</b>. When you <b>commit</b> you are moving forward. Your previous drafts are cleared, and new drafts begin from the <b>commit</b>.</p>
+        <p>Try scratching and cycling from your new point of progress.</p>
+        <p>
+        <em>ctrl-space</em>: <b>scratch</b></br>
+        <em>ctrl-s</em>: <b>commit</b></br>
+        <em>ctrl-h</em>: <b>cycle</b> left</br>
+        <em>ctrl-l</em>: <b>cycle</b> right</br>
+        </p>
     </div>
+    <div id="dd-nav"><a id="prev" href="#">Prev</a><a id="next" href="#">Next</a></div>
 </body>
+<script src="caret.js"></script>
 <script src="deftdraft.js"></script>
 </html>
