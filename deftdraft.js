@@ -12,6 +12,13 @@ var changes = 0;
 var x = 0;
 var y = 0;
 
+var lc_time = getTime();
+var diffs = [];
+
+function getTime() {
+    return (new Date).getTime();
+}
+
 track_changes = function() {
     now_text = deft.value;
     now_cursor_pos = getCaret(deft);
@@ -19,9 +26,14 @@ track_changes = function() {
     if (now_text == text) {
         change_type = "no change";
     } else if (now_text.length > text.length) {
-        if ((x = (now_text.length - text.length)) == (y = (now_cursor_pos - cursor_pos))) {
+        x = now_text.length - text.length;
+        y = now_cursor_pos - cursor_pos;
+        if (x == y) {
             change_type = "simple insert";
-            diff = [["ins", now_text.substr(cursor_pos, y)]];
+            change_time = getTime(); 
+            diff = ["ins", now_text.substr(cursor_pos, y), change_time - lc_time];
+            lc_time = change_time;
+            diffs.push(diff);
         } else {
             change_type = "complex insert";
         }
