@@ -120,8 +120,8 @@ function bind(sc, f) {
 }
 
 //bind('ctrl+h', function() { left(); });
-bind('ctrl+j', function() { right(); });
-bind('ctrl+k', function() { left(); });
+bind('ctrl+l', function() { right(); });
+bind('ctrl+h', function() { left(); });
 //bind('ctrl+l', function() { right(); });
 
 //bind('alt+left', function() { left(); });
@@ -129,5 +129,5 @@ bind('ctrl+k', function() { left(); });
 //bind('alt+up', function() { commit(); });
 //bind('alt+down', function() { scratch(); });
 
-bind('ctrl+space', function() { commit(); });
-bind('space space', function() { scratch(); });
+bind('ctrl+s', function() { commit(); });
+bind('ctrl+space', function() { scratch(); });
