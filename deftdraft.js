@@ -15,6 +15,8 @@ var d_cr = 0;
 var lc_time = -1;
 var diffs = [];
 
+var special_cmd = false;
+
 function getTime() {
     return (new Date).getTime();
 }
@@ -56,8 +58,9 @@ track_changes = function() {
     d_tx = now_text.length - text.length;
     d_cr = now_cursor_pos - cursor_pos;
 
-    if (now_text == text) {
+    if (now_text == text || special_cmd) {
         change_type = "no change";
+        special_cmd = false;
     } else {
         change_time = getTime(); 
         d_t = change_time - lc_time;
@@ -78,7 +81,7 @@ track_changes = function() {
             diff = ["del", cursor_pos, d_cr - d_tx, d_t];
             diffs.push(diff);
             if (d_cr > 0) {
-                diff = ["ins", cursor_pos, now_text.substr(cursor_pos, d_cr), d_t];
+                diff = ["ins", cursor_pos, now_text.substr(cursor_pos, d_cr), 10];
                 diffs.push(diff);
             }
         }
@@ -127,23 +130,40 @@ function save() {
     buffers[current] = buffer;
 }
 
-function scratch() {
+function do_cmd(f) {
     save();
-    current = buffers.length;
-    buffers.push(sbuffer);
-    sbuffer.set();
+
+    special_cmd = true;
+    change_time = getTime(); 
+    d_t = change_time - lc_time;
+    diffs.push(["del", 0, deft.value.length, d_t]);
+
+    f();
+
+    diffs.push(["ins", 0, deft.value, d_t]);
+    lc_time = change_time;
+}
+
+function scratch() {
+    do_cmd(function() {
+        current = buffers.length;
+        buffers.push(sbuffer);
+        sbuffer.set();
+    });
 }
 
 function right() {
-    save();
-    current = (current + 1) % buffers.length;
-    buffers[current].set();
+    do_cmd(function() {
+        current = (current + 1) % buffers.length;
+        buffers[current].set();
+    });
 }
 
 function left() {
-    save();
-    current = current == 0 ? (buffers.length - 1) : current - 1;
-    buffers[current].set();
+    do_cmd(function() {
+        current = current == 0 ? (buffers.length - 1) : current - 1;
+        buffers[current].set();
+    });
 }
 
 function status() {
