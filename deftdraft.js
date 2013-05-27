@@ -12,14 +12,41 @@ var changes = 0;
 var d_tx = 0;
 var d_cr = 0;
 
-var lc_time = getTime();
+var lc_time = -1;
 var diffs = [];
 
 function getTime() {
     return (new Date).getTime();
 }
 
+function playback() {
+    playback_buffer = new Buffer('', 0);
+    playback_buffer.set();
+    if (diffs.length > 0) {
+
+    }
+}
+
+function r_playback() {
+    diff = diffs.shift();
+    if (diff[0] == "ins") {
+        pb_text = deft.value;
+        start = pb_text.slice(0, diff[1]);
+        end = pb_text.slice(diff[1]);
+        deft.value = start + diff[2] + end;
+    }
+    if (diff[0] == "del") {
+        pb_text = deft.value;
+        start = pb_text.slice(0, diff[1]);
+        end = pb_text.slice(diff[1] + diff[2]);
+        deft.value = start + end;
+    }
+}
+
+
 track_changes = function() {
+    if (lc_time < 0) { lc_time = getTime(); }
+
     now_text = deft.value;
     now_cursor_pos = getCaret(deft);
 
@@ -47,8 +74,10 @@ track_changes = function() {
             change_type = "composite";
             diff = ["del", cursor_pos, d_cr - d_tx, d_t];
             diffs.push(diff);
-            diff = ["ins", cursor_pos, now_text.substr(cursor_pos, d_cr), d_t];
-            diffs.push(diff);
+            if (d_cr > 0) {
+                diff = ["ins", cursor_pos, now_text.substr(cursor_pos, d_cr), d_t];
+                diffs.push(diff);
+            }
         }
 
         text = now_text;
