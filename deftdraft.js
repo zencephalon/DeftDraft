@@ -22,52 +22,46 @@ function getTime() {
 track_changes = function() {
     now_text = deft.value;
     now_cursor_pos = getCaret(deft);
-    change_time = getTime(); 
 
     d_tx = now_text.length - text.length;
     d_cr = now_cursor_pos - cursor_pos;
-    d_t = change_time - lc_time;
 
     if (now_text == text) {
         change_type = "no change";
-    } else if (now_text.length > text.length) {
-        if (d_tx == d_cr) {
-            change_type = "simple insert";
-            diff = ["ins", cursor_pos, now_text.substr(cursor_pos, d_cr), d_t];
-            diffs.push(diff);
-        } else {
-            change_type = "complex insert";
-            diff = ["del", cursor_pos, d_cr - d_tx, d_t];
-            diffs.push(diff);
-            diff = ["ins", cursor_pos, now_text.substr(cursor_pos, d_cr), d_t];
-            diffs.push(diff);
-        }
-    } else if (now_text.length < text.length) {
-        if (d_tx == d_cr) {
-            change_type = "simple delete";
-            diff = ["del", cursor_pos, -d_tx, d_t];
-            diffs.push(diff);
-        } else {
-            change_type = "complex delete";
-            diff = ["del", cursor_pos, d_cr - d_tx, d_t];
-            diffs.push(diff);
-            diff = ["ins", cursor_pos, now_text.substr(cursor_pos, d_cr), d_t];
-            diffs.push(diff);
-        }
     } else {
-        change_type = "substitution";
+        change_time = getTime(); 
+        d_t = change_time - lc_time;
+        changes++;
+
+        if (d_tx == d_cr) {
+            if (now_text.length > text.length) {
+                change_type = "simple insert";
+                diff = ["ins", cursor_pos, now_text.substr(cursor_pos, d_cr), d_t];
+                diffs.push(diff);
+            } else {
+                change_type = "simple delete";
+                diff = ["del", cursor_pos, -d_tx, d_t];
+                diffs.push(diff);
+            }
+        } else {
+            change_type = "composite";
+            diff = ["del", cursor_pos, d_cr - d_tx, d_t];
+            diffs.push(diff);
+            diff = ["ins", cursor_pos, now_text.substr(cursor_pos, d_cr), d_t];
+            diffs.push(diff);
+        }
+
+        text = now_text;
+        lc_time = change_time;
     }
 
-    changes++;
-    text = now_text;
     cursor_pos = getCaret(deft);
-    lc_time = change_time;
     status();
 };
 
 
 deft.onmouseup = track_changes;
-
+deft.onmousemove = track_changes;
 deft.onkeyup = track_changes;
 
 //deft.oninput = track_changes;
