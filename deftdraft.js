@@ -9,8 +9,8 @@ var text = "";
 var cursor_pos = 0;
 var change_type = "";
 var changes = 0;
-var x = 0;
-var y = 0;
+var d_tx = 0;
+var d_cr = 0;
 
 var lc_time = getTime();
 var diffs = [];
@@ -22,26 +22,37 @@ function getTime() {
 track_changes = function() {
     now_text = deft.value;
     now_cursor_pos = getCaret(deft);
+    change_time = getTime(); 
+
+    d_tx = now_text.length - text.length;
+    d_cr = now_cursor_pos - cursor_pos;
+    d_t = change_time - lc_time;
 
     if (now_text == text) {
         change_type = "no change";
     } else if (now_text.length > text.length) {
-        x = now_text.length - text.length;
-        y = now_cursor_pos - cursor_pos;
-        if (x == y) {
+        if (d_tx == d_cr) {
             change_type = "simple insert";
-            change_time = getTime(); 
-            diff = ["ins", now_text.substr(cursor_pos, y), change_time - lc_time];
-            lc_time = change_time;
+            diff = ["ins", cursor_pos, now_text.substr(cursor_pos, d_cr), d_t];
             diffs.push(diff);
         } else {
             change_type = "complex insert";
+            diff = ["del", cursor_pos, d_cr - d_tx, d_t];
+            diffs.push(diff);
+            diff = ["ins", cursor_pos, now_text.substr(cursor_pos, d_cr), d_t];
+            diffs.push(diff);
         }
     } else if (now_text.length < text.length) {
-        if ((now_text.length - text.length) == (now_cursor_pos - cursor_pos)) {
+        if (d_tx == d_cr) {
             change_type = "simple delete";
+            diff = ["del", cursor_pos, -d_tx, d_t];
+            diffs.push(diff);
         } else {
             change_type = "complex delete";
+            diff = ["del", cursor_pos, d_cr - d_tx, d_t];
+            diffs.push(diff);
+            diff = ["ins", cursor_pos, now_text.substr(cursor_pos, d_cr), d_t];
+            diffs.push(diff);
         }
     } else {
         change_type = "substitution";
@@ -50,6 +61,7 @@ track_changes = function() {
     changes++;
     text = now_text;
     cursor_pos = getCaret(deft);
+    lc_time = change_time;
     status();
 };
 
@@ -119,7 +131,7 @@ function status1() {
 }
 
 function status2() {
-    html = "cursorpos: " + cursor_pos + " change: " + change_type + " x: " + x + " y: " + y;
+    html = "cursorpos: " + cursor_pos + " change: " + change_type + " d_tx: " + d_tx + " d_cr: " + d_cr;
     document.getElementById("buffers").innerHTML = html;
 }
 
