@@ -23,7 +23,7 @@ function playback() {
     playback_buffer = new Buffer('', 0);
     playback_buffer.set();
     if (diffs.length > 0) {
-
+        r_playback();
     }
 }
 
@@ -40,6 +40,9 @@ function r_playback() {
         start = pb_text.slice(0, diff[1]);
         end = pb_text.slice(diff[1] + diff[2]);
         deft.value = start + end;
+    }
+    if (diffs.length > 0) {
+        window.setTimeout(r_playback, diffs[0][3]);
     }
 }
 
